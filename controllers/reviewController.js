@@ -16,6 +16,7 @@ exports.getReviewOfCourse = async (req, res, next) => {
       where: {
         courseId: id,
       },
+      order: [["id", "DESC"]],
     });
     return res.json({ data });
   } catch (error) {
@@ -38,6 +39,7 @@ exports.getReviewByStar = async (req, res, next) => {
         star: star,
         courseId: courseId,
       },
+      order: [["id", "DESC"]],
     });
     return res.json({ data });
   } catch (error) {

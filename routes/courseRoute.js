@@ -15,7 +15,7 @@ router.delete("/course/:id", instructorAuth, courseController.deleteCourseById);
 
 //not protect
 router.get("/course/all", courseController.getAllCourse);
-router.get("/course/:id",  courseController.getCourseById);
+router.get("/course/:id", courseController.getCourseById);
 // not protect
 
 router.put(
@@ -31,10 +31,9 @@ router.delete(
 router.post("/lession/insert", instructorAuth, courseController.addLession);
 router.get("/lession/q", instructorAuth, courseController.getLession);
 
-
 //about pay
-router.get("/check-enrollment/:id",courseController.checkEnrollment);
-router.post("/paid-enrollment/:id",courseController.paidEnrollment);
-router.get("/stripe-success/:id",courseController.stripeSuccess);
+router.get("/check-enrollment/:id", courseController.checkEnrollment);
+router.post("/paid-enrollment/:id", courseController.paidEnrollment);
+router.get("/stripe-success/:id", courseController.stripeSuccess);
 
 module.exports = router;

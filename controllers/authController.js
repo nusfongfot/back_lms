@@ -42,9 +42,8 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    if (!email.trim())
-      return res.status(400).json({ message: "email is required!" });
-    if (!password.trim())
+    if (!email) return res.status(400).json({ message: "email is required!" });
+    if (!password)
       return res.status(400).json({ message: "password is required!" });
     const user = await UserModel.findOne({
       where: { email },

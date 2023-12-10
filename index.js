@@ -14,6 +14,7 @@ const profileRoute = require("./routes/profileRoute");
 const uploadRoute = require("./routes/uploadRoute");
 const userRoute = require("./routes/userRoute");
 const reviewRoute = require("./routes/reviewRoute");
+const questionsRoute = require("./routes/questionsRoute");
 
 const authenticate = require("./middleware/authenticate");
 
@@ -27,12 +28,13 @@ app.use(fileUpload({ useTempFiles: true }));
 app.use("/uploads", express.static("uploads"));
 
 app.use("/api/v1", authRoute);
-app.use("/api/v1", authenticate, courseRoute);
+app.use("/api/v1", courseRoute);
+app.use("/api/v1", userRoute);
 app.use("/api/v1", authenticate, profileRoute);
 app.use("/api/v1", authenticate, instructorRoute);
 app.use("/api/v1", authenticate, uploadRoute);
-app.use("/api/v1", authenticate, userRoute);
 app.use("/api/v1", authenticate, reviewRoute);
+app.use("/api/v1", authenticate, questionsRoute);
 
 app.listen(PORT, host, () => {
   console.log(`Listening on ${PORT}`);

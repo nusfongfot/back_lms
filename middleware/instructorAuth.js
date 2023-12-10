@@ -15,7 +15,6 @@ module.exports = async (req, res, next) => {
     const privateKey = process.env.JSONWEB_SECRET;
     const payload = jwt.verify(token, privateKey);
     const userId = payload.userId;
-    console.log('userId', userId)
 
     if (userId.role !== "instructor") {
       return res

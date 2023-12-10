@@ -151,7 +151,6 @@ exports.instructorPayoutSettings = async (req, res, next) => {
         redirect_url: process.env.STRIPE_SETTINGS_REDIRECT,
       }
     );
-    console.log(loginLink);
     return res.json({ data: loginLink });
   } catch (error) {
     next(error);

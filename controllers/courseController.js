@@ -1,5 +1,6 @@
 const CourseModel = require("../models/Course");
 const LessionModel = require("../models/Lession");
+const LessonsCompletedModel = require("../models/Lession_Completed");
 const UserModel = require("../models/User");
 const verifyMemberServices = require("../services/verifyMember");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -334,12 +335,12 @@ exports.checkEnrollment = async (req, res, next) => {
     const findIdCurrentCourses = currentCourses.filter(
       (item) => item?.id == courseId
     );
-
     if (findIdCurrentCourses.length > 0) {
       return res.status(400).json({ message: "you alread enroll this course" });
     }
 
     const updatedCourses = [...currentCourses, course];
+
     await UserModel.update(
       {
         courses: updatedCourses,
@@ -362,19 +363,21 @@ exports.paidEnrollment = async (req, res, next) => {
   try {
     const id = req.params.id;
     const memberEmail = await verifyMemberServices.verifyUserId(req);
-
+    CourseModel.belongsTo(UserModel);
     //check if course is free or paid
     const course = await CourseModel.findOne({
+      include: {
+        model: UserModel,
+        attributes: ["stripe_account_id"],
+        required: false,
+      },
       where: {
         id: id,
         deleted: false,
       },
     });
-    const user = await UserModel.findOne({
-      where: {
-        email: memberEmail,
-      },
-    });
+    if (!course) return res.status(404).json({ message: "course not found" });
+
     //application fee 30%
     const fee = (course.price * 0.3).toFixed(2);
     const session = await stripe.checkout.sessions.create({
@@ -395,12 +398,12 @@ exports.paidEnrollment = async (req, res, next) => {
       ],
       //charge buyer and transfer remaining balance to seller (after fee)
       ///* need to have user.stripe_account_id for use payment_intent_data */
-      // payment_intent_data: {
-      //   application_fee_amount: Math.round(fee * 100),
-      //   transfer_data: {
-      //     destination: user.stripe_account_id,
-      //   },
-      // },
+      payment_intent_data: {
+        application_fee_amount: Math.round(fee * 100),
+        transfer_data: {
+          destination: course.user.stripe_account_id,
+        },
+      },
       mode: "payment",
       // redirect url after successfully payment
       success_url: `${process.env.STRIPE_SUCCESS_URL}/${course.id}`,
@@ -445,6 +448,7 @@ exports.stripeSuccess = async (req, res, next) => {
     if (!user.stripe_session) {
       return res.status(400).json({ message: "stripe_session is invalid" });
     }
+
     //restrive stripe session
     const session = await stripe.checkout.sessions.retrieve(
       user.stripe_session.id
