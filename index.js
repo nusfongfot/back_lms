@@ -30,10 +30,10 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/v1", authRoute);
 app.use("/api/v1", courseRoute);
 app.use("/api/v1", userRoute);
+app.use("/api/v1",  reviewRoute);
 app.use("/api/v1", authenticate, profileRoute);
 app.use("/api/v1", authenticate, instructorRoute);
 app.use("/api/v1", authenticate, uploadRoute);
-app.use("/api/v1", authenticate, reviewRoute);
 app.use("/api/v1", authenticate, questionsRoute);
 
 app.listen(PORT, host, () => {
