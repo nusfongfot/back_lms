@@ -46,8 +46,10 @@ exports.login = async (req, res, next) => {
     if (!password)
       return res.status(400).json({ message: "password is required!" });
     const user = await UserModel.findOne({
-      where: { email },
+      where: { email: email },
+      attributes: ["id", "email", "role", "password"],
     });
+
     if (!user)
       return res
         .status(400)
@@ -57,10 +59,11 @@ exports.login = async (req, res, next) => {
       return res
         .status(400)
         .json({ message: "email or password is not correct" });
+
     const paylod = { userId: user };
     let token = servicesGenToken.genToken(paylod);
     const data = await UserModel.findOne({
-      where: { email },
+      where: { email: email },
       attributes: { exclude: ["password"] },
     });
     return res.json({ message: "login successfully", token, data });
