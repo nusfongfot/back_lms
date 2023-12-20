@@ -21,5 +21,5 @@ const ReviewModal = connect_db.define("reviews", {
   },
 });
 
-ReviewModal.sync({ alter: true });
+// ReviewModal.sync({ alter: true });
 module.exports = ReviewModal;
