@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const fileUpload = require("express-fileupload");
 
-const PORT = process.env.PORT || 3056;
+const PORT = process.env.PORT_BASE || 3088;
 const host = "0.0.0.0";
 require("dotenv").config();
 
